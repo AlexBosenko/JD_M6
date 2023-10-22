@@ -2,66 +2,37 @@ package org.example;
 
 import org.example.db.*;
 import org.example.entities.*;
+import org.example.services.ClientService;
 
 import java.util.List;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
         Database database = Database.getInstance();
 
-        //init DB
-        new DatabaseInitService().initDb(database);
+        ClientService clientService = new ClientService(database.getConnection());
 
-        //populate DB
-        DatabasePopulateService dps = new DatabasePopulateService();
-        //simple statement
-        //dps.populateDb(database);
+        //insert new client
+        String newClient = "Tri Star Pictures";
+        long createdClientId = clientService.createNewClient(newClient);
+        System.out.println("new client id = " + createdClientId);
 
-        //prepared statement
-        dps.populateWorker(database);
-        dps.populateClient(database);
-        dps.populateProject(database);
-        dps.populateProjectWorker(database);
+        //select client name by id
+        long clientId = 5L;
+        String clientName = clientService.findClientById(clientId);
+        System.out.println("client id = " + clientId + ", name = " + clientName);
 
-        //queries
-        System.out.println("Workers with MAX salary:");
-        List<MaxSalaryWorker> maxSalaryWorkers = new DatabaseQueryService().findMaxSalaryWorker(database);
-        for (MaxSalaryWorker maxSalaryWorker : maxSalaryWorkers) {
-            System.out.println(maxSalaryWorker);
-        }
+        //update client name by id
+        clientService.setNameClientById("New name", clientId);
 
-        System.out.println("----------------------");
+        //delete client name by id
+        clientId = 8L;
+        clientService.deleteClientById(clientId);
 
-        System.out.println("Clients project count:");
-        List<MaxProjectCountClient> maxProjectCountClient = new DatabaseQueryService().findMaxProjectsClient(database);
-        for (MaxProjectCountClient projectCountClient : maxProjectCountClient) {
-            System.out.println(projectCountClient);
-        }
-
-        System.out.println("----------------------");
-
-        System.out.println("Longest project:");
-        List<LongestProject> longestProjects = new DatabaseQueryService().findLongestProject(database);
-        for (LongestProject longestProject : longestProjects) {
-            System.out.println(longestProject);
-        }
-
-        System.out.println("----------------------");
-
-        System.out.println("Youngest eldest workers:");
-        List<YoungestEldestWorkers> youngestEldestWorkers = new DatabaseQueryService().findYoungestEldestWorkers(database);
-        for (YoungestEldestWorkers youngestEldestWorker : youngestEldestWorkers) {
-            System.out.println(youngestEldestWorker);
-        }
-
-        System.out.println("----------------------");
-
-        System.out.println("Print project prices:");
-        List<ProjectPrices> projectPrices = new DatabaseQueryService().printProjectPrices(database);
-        for (ProjectPrices projectPrice : projectPrices) {
-            System.out.println(projectPrice);
+        //select all clients
+        List<Client> allClient = clientService.findAllClient();
+        for (Client client : allClient) {
+            System.out.println("client = " + client);
         }
 
         database.closeConnection();

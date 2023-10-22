@@ -1,10 +1,16 @@
 package org.example.entities;
 
 public class Client {
+    private long id;
     private final String name;
 
-    public Client(String name) {
+    public Client(long id, String name) {
+        this.id = id;
         this.name = name;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
@@ -14,7 +20,8 @@ public class Client {
     @Override
     public String toString() {
         return "Client{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

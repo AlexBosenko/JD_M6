@@ -1,6 +1,7 @@
 package org.example.db;
 
 import org.example.properties.PropertyReader;
+import org.flywaydb.core.Flyway;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +16,11 @@ public class Database {
         String url = PropertyReader.getInstance().getConnectionUrl();
         String user = PropertyReader.getInstance().getUser();
         String password = PropertyReader.getInstance().getPassword();
-
+        Flyway flyway = Flyway
+                .configure()
+                .dataSource(url, user, password)
+                .load();
+        flyway.migrate();
         try {
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
